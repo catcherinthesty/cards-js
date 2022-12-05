@@ -1,4 +1,53 @@
-module.exports = (function () {
+class Deck {
+	constructor(factory) {
+		this.fullDeck = factory();
+		this.playing = this.fullDeck.map((x)=>x);
+		this.discard = [];
+	}
+	refreshFull(shuffle=false) {
+		this.playing = this.fullDeck.map((x)=>x);
+		if(shuffle) { this.shuffle() }
+	}
+	refreshDiscard(shuffle=false) {
+		this.playing=this.playing.concat(this.discard);
+		if(shuffle) { this.shuffle() }
+	}
+	shuffle() {
+		let i = this.playing.length;
+		while (--i > 0) {
+  			let randIndex = Math.floor(Math.random() * (i + 1));
+  			[this.playing[randIndex], this.playing[i]] = [this.playing[i], this.playing[randIndex]];
+		}
+	}
+	dealCard(pos=0) {
+		return this.playing.splice(pos,1)[0];
+	}
+	drawCard = this.dealCard;
+	topdeckCard(pos=0) {
+		this.playing.unshift(this.playing.splice(pos,1)[0])
+	}
+	dealHand(num) {
+		var retVal=[];
+		for(let n=num; n>0; n--) {
+			retVal.push(this.dealCard());
+		}
+		return retVal;
+	}
+	peekCard(pos=0) {
+		return this.playing[pos];
+	}
+}
+
+class Hand {
+	constructor(originDeck) {
+		this.cards = [];
+		this.discardDeck = originDeck.discard;
+	}
+	discardCard = function(pos=0){
+		this.discardDeck.unshift(this.cards.splice(pos,1)[0]);
+	}
+}
+
 const FRENCH_DECK_FACTORY = function() {
 	var deck = [];
 	for(s in FRENCH_SUITS) {
@@ -76,7 +125,6 @@ const TAROT_CARD_NAME = function() {
 		return arguments[0]
 	}
 }
-tarot_deck=TAROT_DECK_FACTORY();
-poker_deck=FRENCH_DECK_FACTORY();
-return tarot_deck, poker_deck;
-});
+tarotDeck=new Deck(TAROT_DECK_FACTORY)
+pokerDeck=new Deck(FRENCH_DECK_FACTORY),
+module.exports = { Hand, Deck, tarotDeck, pokerDeck };
