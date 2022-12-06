@@ -3,8 +3,8 @@ const deck = Cards.tarotDeck;
 const Hand = Cards.Hand;
 const uno = Cards.unoDeck;
 c=console.log;
-hand1=new Hand(deck);
-hand2=new Hand(deck);
+hand1=new Hand(uno);
+hand2=new Hand(uno);
 /*deck.shuffle();
 hand1.cards=deck.dealHand(5);
 hand2.cards=deck.dealHand(5);
@@ -26,4 +26,9 @@ hand1.drawCard()
 c(hand1.cards)*/
 unoDeck.shuffle()
 hand1.cards=uno.dealHand(5)
-c(hand1.cards);
+/*i=uno.dealHand(1)
+c(i)
+hand1.cards=i*/
+c(hand1.cards)
+//hand1.cards=uno.dealHand(5)
+//c(uno.discard);

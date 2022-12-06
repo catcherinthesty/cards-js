@@ -6,14 +6,16 @@
  * restore the deck to its original state, or for comparison purposes
  * deck.discard is an empty ordered array containing cards that have been placed
  * therein, which, by default, are stacked on the top.
- */
+ **/
 class Deck {
 	/**
 	 * The constructor function takes a factory as its input, allowing for nearly
-	 * any kind of card to be placed therein.
-	 * Cards need no properties to work. In theory, a card could function even if
-	 * it was an empty object.
-	 */
+	 * any kind of card to be created. The function should return an ordered
+	 * array containing the cards.
+	 * Cards need no properties to work within the context of a deck. In theory,
+	 * a card could function even if it was an empty object.
+	 * In practice, a card should have all obvious and derived properties present.
+	 **/
 	constructor(factory) {
 		this.fullDeck = factory();
 		this.playing = this.fullDeck.map((x)=>x);
@@ -21,8 +23,10 @@ class Deck {
 	}
 	/**
 	 * Refreshes the entire deck. If true is passed as an argument, also shuffles.
-	 * Optionally shuffles or clears discard.
-	 */
+	 * Optionally shuffles or clears discard (true in the second paramter)
+	 * @param shuffle(bool) determines if there should be shuffling after the restore
+	 * @param clearDiscard(bool) determines if the discard should be emptied.
+	 **/
 	refreshFull(shuffle=false,clearDiscard=false) {
 		this.playing = this.fullDeck.map((x)=>x);
 		if(clearDiscard) { this.discard = [] }
@@ -30,15 +34,16 @@ class Deck {
 	}
 	/**
 	 * returns the discard to the end of the deck. If true is passed, also shuffles.
-	 */
+	 * @param shuffle(bool) determines if there should be shuffling after combining
+	 **/
 	refreshDiscard(shuffle=false) {
 		this.playing=this.playing.concat(this.discard);
 		this.discard=[]
 		if(shuffle) { this.shuffle() }
 	}
 	/**
-	 * Shuffles the deck.
-	 */
+	 * Shuffles the deck. Accepts no parameters.
+	 **/
 	shuffle() {
 			let i = this.playing.length;
 		while (--i > 0) {
@@ -48,15 +53,15 @@ class Deck {
 	}
 	/**
 	 * Dealing a card returns the card at a given position, defaulting to 0 (top of deck)
-	 */
+	 **/
 	dealCard(pos=0) {
 		return this.playing.splice(pos,1)[0];
 	}
-	drawCard = this.dealCard; // Technically, a deck DEALS cards, a hand DRAWS cards
-	// Nonetheless, I'm including this alias to avoid confusion later.
+	drawCard = this.dealCard; /* Technically, a deck DEALS cards, a hand DRAWS cards
+	Nonetheless, I'm including this alias to avoid confusion later. */
 	/**
 	 * Moves a given card to the top of the deck.
-	 */
+	 **/
 	topdeckCard(pos=0) {
 		this.playing.unshift(this.playing.splice(pos,1)[0])
 	}
@@ -70,17 +75,17 @@ class Deck {
 	 * For dealing a specific number of cards.
 	 * @param num (Integer) the number of cards to deal
 	 * @return (Array) an array of num cards all taken from the top of the deck
-	 */
+	 **/
 	dealHand(num) {
 		var retVal=[];
-		for(let n=num; n>0; n--) {
+		for(let n=0; n<num; n++) {
 			retVal.push(this.dealCard());
 		}
 		return retVal;
 	}
 	/**
 	 * Peeks at the card at the indicated position, defaulting to 0
-	 */
+	 **/
 	peekCard(pos=0) {
 		return this.playing[pos];
 	}
@@ -88,17 +93,17 @@ class Deck {
 
 class Hand {
 	/**
-	 * @param originDeck (Deck object) The deck from which this hand draws
-	 * and discards
-	 */
+	 * @param originDeck(Deck obj) The deck from which this hand draws
+	 * and to whose discard it discards.
+	 **/
 	constructor(originDeck) {
 		this.cards = [];
 		this.discardDeck = originDeck.discard;
 		this.originDeck = originDeck;
 	}
 	/**
-	 * @param pos (Integer) The position in hand of the card to discard.
-	 */
+	 * @param pos(int) The position in hand of the card to discard.
+	 **/
 	discardCard = function(pos=0){
 		this.discardDeck.unshift(this.cards.splice(pos,1)[0]);
 	}
@@ -110,7 +115,7 @@ class Hand {
 /**
  * An example factory for a French-suited deck, suitable for poker.
  * Accepts an argument for inclusion of Jokers.
- */
+ **/
 const FRENCH_SUITS = ['Spades', 'Hearts', 'Diamonds', 'Clubs'];
 const FRENCH_RANKS = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven',
 					  'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King'];
