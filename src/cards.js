@@ -1,8 +1,12 @@
 class Deck {
 	constructor(factory) {
+		if (typeof factory !== 'function') {
+			throw new Error('Factory must be a function');
+		}
 		this.fullDeck = factory();
 		this.playing = this.fullDeck.map((x)=>x);
 		this.discard = [];
+		this.drawCard = this.dealCard;
 	}
 	refreshFull(shuffle=false) {
 		this.playing = this.fullDeck.map((x)=>x);
@@ -14,15 +18,16 @@ class Deck {
 	}
 	shuffle() {
 		let i = this.playing.length;
-		while (--i > 0) {
-  			let randIndex = Math.floor(Math.random() * (i + 1));
-  			[this.playing[randIndex], this.playing[i]] = [this.playing[i], this.playing[randIndex]];
+		// Fisher-Yates is generally accepted to be an efficient and sufficiently random algorithm	
+		while (i > 1) {
+		const randIndex = Math.floor(Math.random() * i);
+		i--;
+		[this.playing[i], this.playing[randIndex]] = [this.playing[randIndex], this.playing[i]];
 		}
 	}
 	dealCard(pos=0) {
 		return this.playing.splice(pos,1)[0];
 	}
-	drawCard = this.dealCard;
 	topdeckCard(pos=0) {
 		this.playing.unshift(this.playing.splice(pos,1)[0])
 	}
@@ -43,7 +48,7 @@ class Hand {
 		this.cards = [];
 		this.discardDeck = originDeck.discard;
 	}
-	discardCard = function(pos=0){
+	discardCard(pos=0) {
 		this.discardDeck.unshift(this.cards.splice(pos,1)[0]);
 	}
 }
